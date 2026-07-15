@@ -139,10 +139,11 @@ function Main({
   const [showTextPadDrawer, setShowTextPadDrawer] = useState(false);
   const [lastUploadKey, setLastUploadKey] = useState<string | null>(null);
 
-  // --- 新增弹窗状态 ---
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [renameValue, setRenameValue] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   const transferQueue = useTransferQueue();
   const uploadEnqueue = useUploadEnqueue();
@@ -321,7 +322,8 @@ function Main({
             `/webdav/${encodeKey(file.key)}?t=${t}`,
             window.location.href
           );
-          navigator.share({ url: url.toString() });
+          setShareUrl(url.toString());
+          setShareDialogOpen(true);
         }}
       />
 
@@ -385,6 +387,36 @@ function Main({
             }}
           >
             删除
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* 分享弹窗 */}
+      <Dialog open={shareDialogOpen} onClose={() => setShareDialogOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>分享文件</DialogTitle>
+        <DialogContent sx={{ mt: 1 }}>
+          <TextField
+            margin="dense"
+            label="分享链接"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={shareUrl}
+            InputProps={{
+              readOnly: true,
+            }}
+            onFocus={(e) => e.target.select()}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShareDialogOpen(false)}>取消</Button>
+          <Button 
+            variant="contained"
+            onClick={() => {
+              navigator.clipboard.writeText(shareUrl);
+              setShareDialogOpen(false);
+            }}
+          >
+            复制链接
           </Button>
         </DialogActions>
       </Dialog>
