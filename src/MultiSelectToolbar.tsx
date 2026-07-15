@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { IconButton, Menu, MenuItem, Slide, Toolbar } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -23,7 +23,6 @@ function MultiSelectToolbar({
   onShare: () => void;
 }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const shareBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!multiSelected || multiSelected.length === 0) {
@@ -82,15 +81,13 @@ function MultiSelectToolbar({
                   onRename();
                 }}>重命名</MenuItem>
                 <MenuItem onClick={() => {
-                  shareBtnRef.current?.click();
                   setAnchorEl(null);
+                  setTimeout(() => onShare(), 300);
                 }}>分享</MenuItem>
               </React.Fragment>
             )}
           </Menu>
         )}
-        {/* Hidden button to prevent navigator.share from closing when Menu unmounts */}
-        <button ref={shareBtnRef} style={{ display: "none" }} onClick={onShare} />
       </Toolbar>
     </Slide>
   );
